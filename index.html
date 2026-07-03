@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Exact Online — inlogcode</title>
+<style>
+  body {
+    font-family: -apple-system, Helvetica, Arial, sans-serif;
+    max-width: 640px;
+    margin: 60px auto;
+    padding: 0 20px;
+    color: #1b1b1b;
+    background: #fafafa;
+  }
+  h1 { font-size: 20px; }
+  .card {
+    background: #fff;
+    border: 1px solid #e2e2e2;
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-top: 20px;
+  }
+  .code-box {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 15px;
+    word-break: break-all;
+    background: #f2f4f7;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 14px 0;
+  }
+  button {
+    background: #1F4E78;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  button.copied { background: #2e7d32; }
+  .muted { color: #666; font-size: 13px; }
+  .fout { color: #9a3b2f; background: #fdecea; border: 1px solid #f3b5ae; border-radius: 8px; padding: 12px 16px; }
+</style>
+</head>
+<body>
+
+<h1>Exact Online — inlogcode</h1>
+
+<div id="met-code" class="card" style="display:none;">
+  <p>Je bent ingelogd bij Exact Online. Kopieer onderstaande code en plak
+  hem in de leningen-app op je Mac.</p>
+  <div class="code-box" id="code-waarde"></div>
+  <button id="kopieer-knop" type="button">Code kopiëren</button>
+  <p class="muted">Deze code is eenmalig geldig en verloopt na korte tijd — plak
+  hem meteen in de app.</p>
+</div>
+
+<div id="met-fout" class="card fout" style="display:none;">
+  <strong>Exact meldt een fout:</strong>
+  <div class="code-box" id="fout-waarde"></div>
+</div>
+
+<div id="zonder-code" class="card" style="display:none;">
+  <p>Geen <code>code</code>-parameter gevonden in de URL. Deze pagina is
+  bedoeld als redirect-doel na het inloggen bij Exact Online — open hem niet
+  rechtstreeks.</p>
+</div>
+
+<script>
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var code = params.get('code');
+    var error = params.get('error') || params.get('error_description');
+
+    if (code) {
+      document.getElementById('code-waarde').textContent = code;
+      document.getElementById('met-code').style.display = 'block';
+
+      document.getElementById('kopieer-knop').addEventListener('click', function () {
+        navigator.clipboard.writeText(code).then(function () {
+          var btn = document.getElementById('kopieer-knop');
+          btn.textContent = 'Gekopieerd!';
+          btn.classList.add('copied');
+          setTimeout(function () {
+            btn.textContent = 'Code kopiëren';
+            btn.classList.remove('copied');
+          }, 2000);
+        });
+      });
+    } else if (error) {
+      document.getElementById('fout-waarde').textContent = error;
+      document.getElementById('met-fout').style.display = 'block';
+    } else {
+      document.getElementById('zonder-code').style.display = 'block';
+    }
+  })();
+</script>
+
+</body>
+</html>
